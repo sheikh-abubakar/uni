@@ -5,20 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Professor</title>
     <link rel="stylesheet" href="css/std.css"> 
-    	<!--
-    - favicon
-  -->
-  <link rel="icon" type="image/png" href="favicons/favicon-96x96.png" sizes="96x96" />
-  <link rel="icon" type="image/svg+xml" href="favicons/favicon.svg" />
-  <link rel="shortcut icon" href="favicons/favicon.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-touch-icon.png" />
-  <meta name="apple-mobile-web-app-title" content="CMS" />
-  <link rel="manifest" href="favicons/site.webmanifest" />
+    <!-- Favicon links -->
+    <link rel="icon" type="image/png" href="favicons/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="favicons/favicon.svg" />
+    <link rel="shortcut icon" href="favicons/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="CMS" />
+    <link rel="manifest" href="favicons/site.webmanifest" />
 </head>
 <body>
     <div class="form-container">
         <h1>Add Professor</h1>
-        <form action="insert_professor.php" method="post" enctype="multipart/form-data">
+        <form id="professorForm" action="insert_professor.php" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="person_id">Person ID:</label>
                 <input type="text" id="person_id" name="person_id" required>
@@ -60,8 +58,9 @@
                 <input type="text" id="postal_code" name="postal_code" required>
             </div>
             <div class="form-group">
-                <label for="img">Image:</label>
+                <label for="img">Image (Max size: 2MB):</label>
                 <input type="file" id="img" name="img" accept="image/*" required>
+                <span id="fileSizeError" style="color: red; display: none;">File size exceeds 2MB. Please choose a smaller image.</span>
             </div>
             <div class="form-group">
                 <label for="prof_education">Education:</label>
@@ -84,5 +83,28 @@
             </div>
         </form>
     </div>
+
+    <script>
+        
+        const form = document.getElementById('professorForm');
+        const fileInput = document.getElementById('img');
+        const fileSizeError = document.getElementById('fileSizeError');
+        const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
+
+        form.addEventListener('submit', function(event) {
+            const file = fileInput.files[0];
+
+            
+            if (file) {
+                if (file.size > MAX_FILE_SIZE) {
+                    
+                    fileSizeError.style.display = 'inline';
+                    event.preventDefault(); 
+                } else {
+                    fileSizeError.style.display = 'none';
+                }
+            }
+        });
+    </script>
 </body>
 </html>

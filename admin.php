@@ -23,6 +23,7 @@ include "php/headertop_admin.php";
 				<li><a href="st_result.php">Student Result</a></li>
 				<li><a href="class_att.php">Attendance</a></li>
 				<li><a href="add_student.html">Add Student</a></li>
+				<li><a href="add_course.html">Add Course</a></li>
 				<li><a href="att_short.php">View attandance shortage list</a></li>
 				<li><a href="student_list_pdf.php"><button style="border-radius:10px;transition:all 0.3s ease-in-out;" onmouseover="this.style.backgroundColor='#ddd'" onmouseout="this.style.backgroundColor='#fff'" >Download Student List</button></a></li>
 			</ul>
