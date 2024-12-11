@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Student</title>
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="fonts/stylesheet.css">
+        <link rel="stylesheet" href="css/std.css">
+
+        	<!--
+    - favicon
+  -->
+  <link rel="icon" type="image/png" href="favicons/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="favicons/favicon.svg" />
+  <link rel="shortcut icon" href="favicons/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-title" content="CMS" />
+  <link rel="manifest" href="favicons/site.webmanifest" />
+    
+</head>
+<body>
+    <div class="form-container">
+        <h1>Add Student</h1>
+        <form action="insert_student.php" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="person_id">Person ID:</label>
+                <input type="text" id="person_id" name="person_id" required>
+            </div>
+            <div class="form-group">
+                <label for="fname">First Name:</label>
+                <input type="text" id="fname" name="fname" required>
+            </div>
+            <div class="form-group">
+                <label for="lname">Last Name:</label>
+                <input type="text" id="lname" name="lname" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="dob">Date of Birth:</label>
+                <input type="date" id="dob" name="dob" required>
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                <input type="text" id="gender" name="gender" required>
+            </div>
+            <div class="form-group">
+                <label for="contactno">Contact No:</label>
+                <input type="text" id="contactno" name="contactno" required>
+            </div>
+            <div class="form-group">
+                <label for="state_code">State Code:</label>
+                <input type="text" id="state_code" name="state_code" required>
+            </div>
+            <div class="form-group">
+                <label for="city_code">City Code:</label>
+                <input type="text" id="city_code" name="city_code" required>
+            </div>
+            <div class="form-group">
+                <label for="postal_code">Postal Code:</label>
+                <input type="text" id="postal_code" name="postal_code" required>
+            </div>
+            <div class="form-group">
+                <label for="img">Image:</label>
+                <input type="file" id="img" name="img" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="degree">Degree:</label>
+                <input type="text" id="degree" name="degree" required>
+            </div>
+            <div class="form-group">
+                <label for="prof_id">Professor ID:</label>
+                <input type="text" id="prof_id" name="prof_id" required>
+            </div>
+            <div class="form-group">
+                <label for="dept_code">Department Code:</label>
+                <input type="text" id="dept_code" name="dept_code" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group submit-btn">
+                <input type="submit" value="Add Student">
+            </div>
+        </form>
+    </div>    </form>
+</body>
+</html>
