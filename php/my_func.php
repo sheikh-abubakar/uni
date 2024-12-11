@@ -1,8 +1,5 @@
 <?php
 class login_registration_class{
-	  
-
-   
 	public function __construct(){
 		$db = new databaseConnection();
 	}
@@ -297,25 +294,22 @@ class login_registration_class{
 	}
 
 	// attandance shortage
-	
-	public function get_students_with_low_attendance($threshold) {
-        // This query calculates the attendance percentage for each student
-        // It counts "present" and "absent" entries and calculates the percentage of attendance
-        $query = "SELECT at_student.name, attn.st_id, 
-                         COUNT(CASE WHEN atten = 'present' THEN 1 END) AS present_count, 
-                         COUNT(*) AS total_classes, 
-                         (COUNT(CASE WHEN atten = 'present' THEN 1 END) * 100 / COUNT(*)) AS attendance_percentage
-                  FROM at_student
-                  JOIN attn ON at_student.st_id = attn.st_id
-                  GROUP BY attn.st_id
-                  HAVING attendance_percentage < ?";
-        
-        $stmt = $this->db->prepare($query);
-        $stmt->bind_param("i", $threshold);  // Bind the threshold (e.g., 75)
-        $stmt->execute();
-        return $stmt->get_result();  // Return the result set
-    }
 
+public function get_students_with_low_attendance($threshold) {
+    // This query assumes you have a table `attendance` that tracks student attendance
+    // and it has a column `attendance_percentage` that stores their percentage.
+    // Adjust the query if your table/column names are different.
+
+    $query = "SELECT students.name, students.st_id, attendance.attendance_percentage 
+              FROM students 
+              JOIN attendance ON students.st_id = attendance.st_id
+              WHERE attendance.attendance_percentage < ?";
+    global $conn;
+    $stmt = $conn->prepare($query);  // Prepare the query
+    $stmt->bind_param("i", $threshold);  // Bind the attendance threshold value
+    $stmt->execute();  // Execute the query
+    return $stmt->get_result();  // Return the result set
+}
 
 
 
