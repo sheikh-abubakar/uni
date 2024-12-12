@@ -14,6 +14,47 @@ $result = $conn->query($sql); // Execute the query
 
 // Check if any results were returned
 if ($result->num_rows > 0): ?>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+        
+        .container {
+            width: 80%;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f0f0f0;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+    <div class="container">
     <h1>Student Results</h1>
     <table>
         <thead>
@@ -43,6 +84,7 @@ if ($result->num_rows > 0): ?>
             <?php endwhile; ?>
         </tbody>
     </table>
+    </div>
 <?php else: ?>
     <h1>No results found</h1>
 <?php endif; ?>
