@@ -1,5 +1,9 @@
 <?php
-// Database connection (adjust the parameters as necessary)
+require 'dompdf/autoload.inc.php'; // Make sure you have autoloaded dompdf
+
+use Dompdf\Dompdf;
+
+// Database connection
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -36,8 +40,12 @@ $query = "
 ";
 
 $result = $conn->query($query);
-?>
 
+// Initialize Dompdf
+$dompdf = new Dompdf();
+
+// Prepare the HTML for PDF generation
+$html = '
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,98 +53,24 @@ $result = $conn->query($query);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Attendance Shortage List</title>
     <style>
-       
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        h1 {
-            text-align: center;
-            padding: 20px;
-            background-color: #0073e6;
-            color: white;
-            margin: 0;
-        }
-
-        .container {
-            width: 80%;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
             text-align: left;
         }
-
-        table th, table td {
-            padding: 10px;
-            border: 1px solid #ddd;
-        }
-
-        table th {
-            background-color: #0073e6;
-            color: white;
-        }
-
-        table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        table tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        .status-drop {
-            color: red;
-            font-weight: bold;
-        }
-
-        .status-continue {
-            color: green;
-            font-weight: bold;
-        }
-
-        footer {
-            text-align: center;
-            padding: 10px;
-            background-color: #0073e6;
-            color: white;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
-        .download-btn {
-            align-items: center;
-            margin-left: 500px;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #0073e6;
-            color: white;
-            text-decoration: none;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-        }
-        .download-btn:hover {
-            background-color: black;
-            color: white;
-
+        th {
+            background-color: #f2f2f2;
         }
     </style>
 </head>
 <body>
-
 <h1>Attendance Shortage List</h1>
-
 <table>
     <tr>
         <th>Student ID</th>
@@ -147,11 +81,11 @@ $result = $conn->query($query);
         <th>Classes Missed</th>
         <th>Attendance Percentage</th>
         <th>Status</th>
-    </tr>
-    <?php
-    if ($result->num_rows > 0) {
-        while($row = $result->fetch_assoc()) {
-            echo "<tr>
+    </tr>';
+
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        $html .= "<tr>
                     <td>{$row['STU_ID']}</td>
                     <td>{$row['FNAME']}</td>
                     <td>{$row['CRS_CODE']}</td>
@@ -161,19 +95,26 @@ $result = $conn->query($query);
                     <td>{$row['Attendance_Percentage']}</td>
                     <td>{$row['Status']}</td>
                   </tr>";
-        }
-    } else {
-        echo "<tr><td colspan='8'>No records found.</td></tr>";
     }
-    ?>
-</table>
+} else {
+    $html .= "<tr><td colspan='8'>No records found.</td></tr>";
+}
 
-<!-- Download PDF button -->
-<a href="download_pdf.php" class="download-btn">Download PDF</a>
-
+$html .= '</table>
 </body>
-</html>
+</html>';
 
-<?php
+// Load the HTML content into Dompdf
+$dompdf->loadHtml($html);
+
+// Set paper size and orientation
+$dompdf->setPaper('A4', 'landscape');
+
+// Render the PDF
+$dompdf->render();
+
+// Output the generated PDF (force download)
+$dompdf->stream("attendance_shortage_list.pdf", ["Attachment" => true]);
+
 $conn->close();
 ?>
