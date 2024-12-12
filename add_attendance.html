@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Class</title>
+    <link rel="stylesheet" href="css/std.css"> 
+    <!-- Favicon links -->
+    <link rel="icon" type="image/png" href="favicons/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="favicons/favicon.svg" />
+    <link rel="shortcut icon" href="favicons/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="CMS" />
+    <link rel="manifest" href="favicons/site.webmanifest" />
+</head>
+<body>
+    <div class="form-container">
+    <h1>Schedule Class</h1>
+    <form action="insert_attendance.php" method="post">
+        <label for="class_code">Class Code:</label>
+        <input type="text" id="class_code" name="class_code" required><br><br>
+        
+        <label for="class_date">Class Date:</label>
+        <input type="date" id="class_date" name="class_date" required><br><br>
+        
+        <label for="start_time">Start Time:</label>
+        <input type="time" id="start_time" name="start_time" required><br><br>
+        
+        <label for="end_time">End Time:</label>
+        <input type="time" id="end_time" name="end_time" required><br><br>
+        
+        <input type="submit" value="Schedule Class">
+    </form>
+</div>
+</body>
+</html>
