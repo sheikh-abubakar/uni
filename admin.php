@@ -20,7 +20,7 @@ include "php/headertop_admin.php";
 			<h3><i class="fa fa-graduation-cap" aria-hidden="true"></i>&nbsp;Student</h3>
 			<ul style = "border-radius:10px;">
 				<li><a href="view_students.php" >View All Students</a></li>
-				<li><a href="show_result.php">Student Result</a></li>
+				<li><a href="show_result.html">Student Result</a></li>
 				<li><a href="class_att.php">Attendance</a></li>
 				<li><a href="add_student.html">Add Student</a></li>
 				<li><a href="add_course.html">Add Course</a></li>
