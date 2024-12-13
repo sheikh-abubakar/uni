@@ -217,104 +217,126 @@ class login_registration_class{
 	}
 	//attendance system
 	
-	public function attn_student(){
-		global $conn;
-		$sql = "select * from at_student";
-		$result = $conn->query($sql);
-		return $result;
-	}
-	public function add_attn_student($name,$stid){
-		global $conn;
-		$sql = "insert into at_student(name,st_id) values('$name','$stid')";
-		$result = $conn->query($sql);
-		
-		$sql2 = "insert into attn(st_id) values('$stid')";
-		$result = $conn->query($sql2);
-		return $result;
-	}
-	public function insertattn($cur_date,$atten = array()){
-		global $conn;
-		$sql = "select distinct at_date from attn";
-		$result = $conn->query($sql);
-		while($row = $result->fetch_assoc()){
-			$db_date = $row['at_date'];
-			if($cur_date == $db_date){
-				return false;
-			}
-		}
-		foreach($atten as $key =>$attn_value ){
-			if($attn_value == "present"){
-				$sql = "insert into attn(st_id,atten,at_date) values('$key','present','$cur_date')";
-				$att_res = $conn->query($sql);
-			}elseif($attn_value == "absent"){
-				$sql = "insert into attn(st_id,atten,at_date) values('$key','absent','$cur_date')";
-				$att_res = $conn->query($sql);
-			}
-		}
-		if($att_res){
-			return true;
-		}else{
-			return false;
-		}
-		
-	}
-	public function delete_atn_student($at_id){
-		global $conn;
-		$res = $conn->query("delete from at_student where id = '$at_id' ");
-		return $res;
-	}
-	public function get_attn_date(){
-		global $conn;
-		$res = $conn->query("select distinct at_date from attn ");
-		return $res;
-		
-	}
-	public function attn_all_student($date){
-		global $conn;
-		$res = $conn->query("select at_student.name, attn.*
-			from at_student
-			inner join attn
-			on at_student.st_id = attn.st_id
-			where at_date = '$date' ");
-		return $res;
-	}
-	public function update_attn($date,$atten){
-		global $conn;
-		foreach($atten as $key =>$attn_value ){
-			if($attn_value == "present"){
-				$sql = "update attn set atten='present' where st_id='$key' and at_date='$date' ";
-				$att_res = $conn->query($sql);
-			}elseif($attn_value == "absent"){
-				$sql = "update attn set atten='absent' where st_id='$key' and at_date='$date' ";
-				$att_res = $conn->query($sql);
-			}
-		}
-		if($att_res){
-			return true;
-		}else{
-			return false;
-		}
-	}
-
-	// attandance shortage
 	
-	public function get_students_with_low_attendance($threshold) {
-        // This query calculates the attendance percentage for each student
-        // It counts "present" and "absent" entries and calculates the percentage of attendance
-        $query = "SELECT at_student.name, attn.st_id, 
-                         COUNT(CASE WHEN atten = 'present' THEN 1 END) AS present_count, 
-                         COUNT(*) AS total_classes, 
-                         (COUNT(CASE WHEN atten = 'present' THEN 1 END) * 100 / COUNT(*)) AS attendance_percentage
-                  FROM at_student
-                  JOIN attn ON at_student.st_id = attn.st_id
-                  GROUP BY attn.st_id
-                  HAVING attendance_percentage < ?";
-        
-        $stmt = $this->db->prepare($query);
-        $stmt->bind_param("i", $threshold);  // Bind the threshold (e.g., 75)
-        $stmt->execute();
-        return $stmt->get_result();  // Return the result set
+public function attn_student() {
+    global $conn;
+    
+    $sql = "SELECT S.STU_ID, P.FNAME 
+            FROM student S 
+            JOIN person P ON S.STU_ID = P.PERSON_ID";
+    $result = $conn->query($sql);
+    return $result;
+}
+
+	
+public function add_attn_student($name, $stid) {
+    global $conn;
+    $sql = "INSERT INTO student(STU_ID) VALUES('$stid')";
+    $result = $conn->query($sql);
+
+    // Optional: Insert into attendance if needed
+    $sql2 = "INSERT INTO attendance_details(STU_ID, STATUS) VALUES('$stid', 'P')";
+    $result = $conn->query($sql2);
+
+    return $result;
+}
+
+	// Insert attendance for students on a given date
+	public function insertattn($cur_date, $atten = array()) {
+		global $conn;
+	
+		// Check if attendance already exists for the date
+		$sql = "SELECT DISTINCT A.ATTENDANCE_ID 
+				FROM attendance A 
+				WHERE A.CLASS_DATE = '$cur_date'";  // Assuming you store attendance date in 'CLASS_DATE'
+		
+		$result = $conn->query($sql);
+		while($row = $result->fetch_assoc()) {
+			$db_date = $row['ATTENDANCE_ID'];  // Changed to check attendance by ID
+			if($cur_date == $db_date){
+				return false;  // Attendance already exists
+			}
+		}
+	
+		// Loop through attendance data
+		foreach ($atten as $key => $attn_value) {
+			if ($attn_value == "present") {
+				// Insert 'present' attendance in attendance_details
+				$sql = "INSERT INTO attendance_details (ATTENDANCE_ID, STU_ID, STATUS) 
+						VALUES ((SELECT ATTENDANCE_ID FROM attendance WHERE CLASS_CODE = 'CLASS_CODE' AND CLASS_DATE = '$cur_date'),
+						'$key', 'P')";
+				$att_res = $conn->query($sql);
+			} elseif ($attn_value == "absent") {
+				// Insert 'absent' attendance in attendance_details
+				$sql = "INSERT INTO attendance_details (ATTENDANCE_ID, STU_ID, STATUS) 
+						VALUES ((SELECT ATTENDANCE_ID FROM attendance WHERE CLASS_CODE = 'CLASS_CODE' AND CLASS_DATE = '$cur_date'),
+						'$key', 'A')";
+				$att_res = $conn->query($sql);
+			}
+		}
+	
+		if ($att_res) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+
+
+	// Delete a student from attendance
+public function delete_atn_student($at_id) {
+    global $conn;
+
+    // Assuming $at_id refers to the student ID (STU_ID)
+    $res = $conn->query("DELETE FROM student WHERE STU_ID = '$at_id'");
+    return $res;
+}
+
+// Get distinct attendance dates
+public function get_attn_date() {
+    global $conn;
+
+    // Get distinct attendance dates from attendance table
+    $res = $conn->query("SELECT DISTINCT CLASS_DATE FROM attendance");
+    return $res;
+}
+
+// Fetch attendance for all students for a specific date
+public function attn_all_student($date) {
+    global $conn;
+
+    // Fetch all students and their attendance status for a given date
+    $res = $conn->query("SELECT P.FNAME, AD.* 
+                         FROM student S
+                         JOIN person P ON S.STU_ID = P.PERSON_ID
+                         JOIN attendance_details AD ON S.STU_ID = AD.STU_ID
+                         JOIN attendance A ON AD.ATTENDANCE_ID = A.ATTENDANCE_ID
+                         WHERE A.CLASS_DATE = '$date'");
+    return $res;
+}
+
+// Update attendance for students on a given date
+public function update_attn($date, $atten) {
+    global $conn;
+
+    foreach ($atten as $key => $attn_value) {
+        // Set attendance status to 'present' or 'absent'
+        $status = ($attn_value == "present") ? 'P' : 'A';
+
+        // Update attendance status for the student on the given date
+        $sql = "UPDATE attendance_details AD
+                JOIN attendance A ON AD.ATTENDANCE_ID = A.ATTENDANCE_ID
+                SET AD.STATUS = '$status' 
+                WHERE AD.STU_ID = '$key' AND A.class_DATE = '$date'";
+        $att_res = $conn->query($sql);
     }
+
+    return $att_res ? true : false;
+}
+
+
+	
 
 
 
