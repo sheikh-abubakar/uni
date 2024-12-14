@@ -96,59 +96,93 @@ class login_registration_class{
 	All functions for faculty section
 	---------------------------------
 	**/
-	public function fct_registration($name,$uname, $pass,$email, $bday,$gender,$edu,$contact,$address){
+	public function fct_registration($fname, $lname, $uname, $pass, $email, $bday, $gender, $edu, $contact, $state_code, $city_code, $postal_code) {
 		global $conn;
-		$fct = $conn->query("select id from faculty where username='$uname' ");
+		
+		// Check if a person already exists with the same username
+		$fct = $conn->query("SELECT PERSON_ID FROM person WHERE FNAME='$uname'");
 		$count = $fct->num_rows;
-		if($count == 0){
-			$sql = "insert into faculty(name,username,password,email,birthday,gender,education,contact,address) values('$name','$uname','$pass','$email','$bday','$gender','$edu','$contact','$address')";
-			$result = $conn->query($sql);
+	
+		if ($count == 0) {
+			// Insert into `person` table
+			$sql_person = "INSERT INTO person (FNAME, LNAME, EMAIL, DOB, GENDER, CONTACTNO, STATE_CODE, CITY_CODE, POSTAL_CODE) 
+						   VALUES ('$fname', '$lname', '$email', '$bday', '$gender', '$contact', '$state_code', '$city_code', '$postal_code')";
+			$result_person = $conn->query($sql_person);
+	
+			// Get the inserted PERSON_ID
+			$person_id = $conn->insert_id;
+	
+			// Insert into `professor` table using `PERSON_ID`
+			$sql_professor = "INSERT INTO professor (PROF_ID, PROF_EDUCATION, PASSWORD) 
+							  VALUES ('$person_id', '$edu', '$pass')";
+			$result_professor = $conn->query($sql_professor);
+	
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
+	
 	//get faculty 
-	public function get_faculty_by_username($uname){
+	public function get_faculty_by_username($uname) {
 		global $conn;
-		$sql = "select * from faculty where username='$uname'";
+		// Select from `person` and `professor` using join
+		$sql = "SELECT person.*, professor.PROF_EDUCATION, professor.PROF_SPECIALITY 
+				FROM person 
+				JOIN professor ON person.PERSON_ID = professor.PROF_ID 
+				WHERE person.FNAME = '$uname'";
 		$result = $conn->query($sql);
 		return $result;
 	}
-	public function get_faculty(){
+
+	
+	public function get_faculty() {
 		global $conn;
-		$sql = "select * from faculty order by id ASC";
+		// Select from `person` and `professor` using join
+		$sql = "SELECT person.*, professor.PROF_EDUCATION, professor.PROF_SPECIALITY 
+				FROM person 
+				JOIN professor ON person.PERSON_ID = professor.PROF_ID 
+				ORDER BY person.PERSON_ID ASC";
 		$result = $conn->query($sql);
 		return $result;
 	}
+	
 	//login for faculty 
-	public function fct_login($uname, $pass){
+	public function fct_login($uname, $pass) {
 		global $conn;
-		$sql = "select id,username,name from faculty where username='$uname' and password='$pass' ";
+		// Select faculty details by joining `person` and `professor`
+		$sql = "SELECT person.PERSON_ID, person.FNAME, person.LNAME, professor.PASSWORD 
+				FROM person 
+				JOIN professor ON person.PERSON_ID = professor.PROF_ID 
+				WHERE person.FNAME='$uname' AND professor.PASSWORD='$pass'";
 		$result = $conn->query($sql);
 		$count = $result->num_rows;
 		$fctinfo = $result->fetch_assoc();
-		if($count == 1){
+	
+		if ($count == 1) {
 			session_start();
 			$_SESSION['fct_login'] = true;
-			$_SESSION['f_id'] = $fctinfo['id'];
-			$_SESSION['f_uname'] = $fctinfo['username'];
-			$_SESSION['f_name'] = $fctinfo['name'];
+			$_SESSION['f_id'] = $fctinfo['PERSON_ID'];
+			$_SESSION['f_uname'] = $fctinfo['FNAME'];
+			$_SESSION['f_name'] = $fctinfo['FNAME'] . ' ' . $fctinfo['LNAME'];
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
-	public function faculty_logout(){
+	
+	public function faculty_logout() {
 		$_SESSION['fct_login'] = false;
 		unset($_SESSION['f_id']);
 		unset($_SESSION['f_uname']);
 		unset($_SESSION['f_name']);
 		unset($_SESSION['fct_login']);
 	}
-	public function get_faculty_session(){
+	
+	public function get_faculty_session() {
 		return @$_SESSION['fct_login'];
 	}
+	
 	
 	/*
 	**********************

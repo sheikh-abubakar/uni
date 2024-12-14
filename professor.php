@@ -5,56 +5,59 @@ require "php/config.php";
 require_once "php/functions.php";
 $user = new login_registration_class();
 $fid = $_SESSION['f_id'];
-$funame = $_SESSION['f_uname'];
+$funame = $_SESSION['f_uname']; // Username is now FNAME in the `person` table
 $fname = $_SESSION['f_name'];
-if(!$user->get_faculty_session()){
-	header('Location: facultylogin.php');
-	exit();
-	}
-?>	
+
+if (!$user->get_faculty_session()) {
+    header('Location: facultylogin.php');
+    exit();
+}
+
+// Fetch professor details using the updated get_faculty_by_username method
+$professor_details = $user->get_faculty_by_username($funame); // $funame is the username
+$professor_data = $professor_details->fetch_assoc();
+
+if (!$professor_data) {
+    echo "Failed to retrieve professor details.";
+    exit();
+}
+
+// Extract necessary data from the result
+$full_name = $professor_data['FNAME'] . ' ' . $professor_data['LNAME'];
+$email = $professor_data['EMAIL'];
+$dob = $professor_data['DOB'];
+$gender = $professor_data['GENDER'];
+$education = $professor_data['PROF_EDUCATION'];
+$address = $professor_data['STATE_CODE'] . ', ' . $professor_data['CITY_CODE'] . ', ' . $professor_data['POSTAL_CODE'];
+
+?>  
 <?php 
 $pageTitle = "Professor Profile";
 include "php/headertop.php";
 ?>
 <div class="admin_profile">
-	
-	<div class="section">
-			<h3><i class="fa fa-graduation-cap" aria-hidden="true"></i>&nbsp;Student</h3>
-			<ul style = "border-radius:10px;">
-				<li><a href="fct_single_profile.php" >View Your Profile</a></li>
-				<li><a href="show_result.php">Student Result</a></li>
-				<li><a href="class_att.php">Attendance</a></li>
-				<li><a href="add_student.html">Add Student</a></li>
-				<li><a href="add_course.html">Add Course</a></li>
-				<li><a href="create_class.html">Create Class</a></li>
-				<li><a href="add_attendance.html">Schedule the Class Session</a></li>
-				<li><a href="performance_summary.php">Class Report</a></li>
-				<li><a href="att_short.php">View attandance shortage list</a></li>
-				<li><a href="student_list_pdf.php"><button style="border-radius:10px;transition:all 0.3s ease-in-out;" onmouseover="this.style.backgroundColor='#ddd'" onmouseout="this.style.backgroundColor='#fff'" >Download Student List</button></a></li>
-			</ul>
-	</div>
-	<div class="section">
-			<h3><i class="fa fa-male" aria-hidden="true"></i>&nbsp;Professor</h3>
-			<ul>
-				<li><a href="fetch_professors.php">Professor Details</a></li>
-				<li><a href="#">Information</a></li>
-				<li><a href="#">Search Staff</a></li>
-				<li><a href="add_professor.html">Add New Professor</a></li>
-				<li><a href="faculty_list.php"><button>Download Staff List</button></a></li>
-			</ul>
-	</div>
-	<!-- <div class="section">
-	
-			<h3>Registry</h3>
-			<ul>
-				<li><a href="#">Accounts</a></li>
-				<li><a href="#">Salary</a></li>
-				<li><a href="#">Student tution fee</a></li>
-				<li><a href="#">Other cost</a></li>
-			</ul>
+    <h3 style="text-align:center;color:#fff;margin:0;padding:5px;background:#1abc9c">Professor Profile</h3>
 
-	</div> -->
-
+  
+    
+    <div class="section">
+    <h3><i class="fa fa-male" aria-hidden="true"></i>&nbsp;Professor</h3>
+        <ul style="border-radius:10px;">
+            <li><a href="fct_single_profile.php">View Your Profile</a></li>
+            <li><a href="view_class.php">View Classes</a></li>
+            <!-- <li><a href="class_att.php">Attendance</a></li>
+            <li><a href="add_student.html">Add Student</a></li>
+            <li><a href="add_course.html">Add Course</a></li>
+            <li><a href="create_class.html">Create Class</a></li>
+            <li><a href="add_attendance.html">Schedule the Class Session</a></li>
+            <li><a href="performance_summary.php">Class Report</a></li>
+            <li><a href="att_short.php">View Attendance Shortage List</a></li> -->
+            <li><a href="student_list_pdf.php"><button style="border-radius:10px;transition:all 0.3s ease-in-out;" onmouseover="this.style.backgroundColor='#ddd'" onmouseout="this.style.backgroundColor='#fff'">Download Student List</button></a></li>
+        </ul>
+    </div>
+    
+   
 </div>
 
-<?php include "php/footerbottom.php";?>
+<?php include "php/footerbottom.php"; ?>
+<?php ob_end_flush(); ?>
