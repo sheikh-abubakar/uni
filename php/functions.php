@@ -260,13 +260,13 @@ public function add_attn_student($name, $stid) {
 	
 		// Loop through attendance data
 		foreach ($atten as $key => $attn_value) {
-			if ($attn_value == "present") {
+			if ($attn_value == "P") {
 				// Insert 'present' attendance in attendance_details
 				$sql = "INSERT INTO attendance_details (ATTENDANCE_ID, STU_ID, STATUS) 
 						VALUES ((SELECT ATTENDANCE_ID FROM attendance WHERE CLASS_CODE = 'CLASS_CODE' AND CLASS_DATE = '$cur_date'),
 						'$key', 'P')";
 				$att_res = $conn->query($sql);
-			} elseif ($attn_value == "absent") {
+			} elseif ($attn_value == "A") {
 				// Insert 'absent' attendance in attendance_details
 				$sql = "INSERT INTO attendance_details (ATTENDANCE_ID, STU_ID, STATUS) 
 						VALUES ((SELECT ATTENDANCE_ID FROM attendance WHERE CLASS_CODE = 'CLASS_CODE' AND CLASS_DATE = '$cur_date'),
@@ -322,7 +322,7 @@ public function update_attn($date, $atten) {
 
     foreach ($atten as $key => $attn_value) {
         // Set attendance status to 'present' or 'absent'
-        $status = ($attn_value == "present") ? 'P' : 'A';
+        $status = ($attn_value == "P") ? 'P' : 'A';
 
         // Update attendance status for the student on the given date
         $sql = "UPDATE attendance_details AD

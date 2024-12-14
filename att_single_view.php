@@ -62,8 +62,8 @@ include "php/headertop_admin.php";
                 <td><?php echo $full_name; // Show student's full name ?></td>
                 <td><?php echo $rows['STU_ID']; // Show student ID ?></td>
                 <td>
-                    <label style="color:red;font-size:20px"><input type="radio" name="attn[<?php echo $rows['STU_ID'];?>]" value="absent" <?php if($rows['STATUS'] == "absent") echo "checked";?>/>Absent</label>
-                    <label style="color:green;font-size:20px"> <input type="radio" name="attn[<?php echo $rows['STU_ID'];?>]" value="present" <?php if($rows['STATUS'] == "present") echo "checked";?>/>Present</label>
+                    <label style="color:red;font-size:20px"><input type="radio" name="attn[<?php echo $rows['STU_ID'];?>]" value="absent" <?php if($rows['STATUS'] == "A") echo "checked";?>/>Absent</label>
+                    <label style="color:green;font-size:20px"> <input type="radio" name="attn[<?php echo $rows['STU_ID'];?>]" value="present" <?php if($rows['STATUS'] == "P") echo "checked";?>/>Present</label>
                 </td>
             </tr>
             <?php 

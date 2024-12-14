@@ -73,10 +73,10 @@ include "php/headertop_admin.php";
                 <td><?php echo $rows['STU_ID']; // Student ID from student table ?></td>
                 <td>
                     <label style="color:red;font-size:20px">
-                        <input type="radio" name="attn[<?php echo $rows['STU_ID']; ?>]" value="absent" checked/>Absent
+                        <input type="radio" name="attn[<?php echo $rows['STU_ID']; ?>]" value="A" checked/>Absent
                     </label>
                     <label style="color:green;font-size:20px">
-                        <input type="radio" name="attn[<?php echo $rows['STU_ID']; ?>]" value="present" />Present
+                        <input type="radio" name="attn[<?php echo $rows['STU_ID']; ?>]" value="P"  />Present
                     </label>
                 </td>
                 <td><a href="att_del.php?dl=<?php echo $rows['STU_ID']; ?>">Delete</a></td>
