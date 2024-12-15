@@ -10,7 +10,7 @@ if (!isset($_SESSION['f_id'])) {
 $prof_id = $_SESSION['f_id'];
 
 // Fetch classes taught by the professor
-$query_classes = "SELECT c.CLASS_CODE, cr.CRS_TITLE 
+$query_classes = "SELECT distinct c.CLASS_CODE, cr.CRS_TITLE 
                   FROM Class c
                   JOIN Course cr ON c.CRS_CODE = cr.CRS_CODE
                   WHERE c.PROF_ID = ?";
