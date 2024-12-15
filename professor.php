@@ -45,13 +45,7 @@ include "php/headertop.php";
         <ul style="border-radius:10px;">
             <li><a href="fct_single_profile.php">View Your Profile</a></li>
             <li><a href="view_class.php">View Classes</a></li>
-            <!-- <li><a href="class_att.php">Attendance</a></li>
-            <li><a href="add_student.html">Add Student</a></li>
-            <li><a href="add_course.html">Add Course</a></li>
-            <li><a href="create_class.html">Create Class</a></li>
-            <li><a href="add_attendance.html">Schedule the Class Session</a></li>
-            <li><a href="performance_summary.php">Class Report</a></li>
-            <li><a href="att_short.php">View Attendance Shortage List</a></li> -->
+            <li><a href="view_std_att.php?fid=<?php echo $fid; ?>">Attendance</a></li>
             <li><a href="student_list_pdf.php"><button style="border-radius:10px;transition:all 0.3s ease-in-out;" onmouseover="this.style.backgroundColor='#ddd'" onmouseout="this.style.backgroundColor='#fff'">Download Student List</button></a></li>
         </ul>
     </div>

@@ -28,7 +28,7 @@ include "php/headertop.php";
 
         <?php
         // Get the classes assigned to the professor
-        $query = "SELECT c.CLASS_CODE, co.CRS_TITLE, co.CRS_CREDITS, c.ROOM_CODE 
+        $query = "SELECT distinct c.CLASS_CODE, co.CRS_TITLE, co.CRS_CREDITS, c.ROOM_CODE 
                   FROM Class c
                   JOIN Course co ON c.CRS_CODE = co.CRS_CODE
                   WHERE c.PROF_ID = '$fid'";
