@@ -25,7 +25,6 @@ include "header.php";
 						if(empty($st_id) or empty($st_pass)){
 							echo "<p style='color:red;text-align:center;'>Field must not be empty.</p>";
 						}else{
-							$st_pass = md5($st_pass);
 							$login = $user->st_userlogin($st_id, $st_pass);
 							if($login){
 								header('Location: st_profile.php');
