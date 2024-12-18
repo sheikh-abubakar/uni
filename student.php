@@ -45,6 +45,8 @@ include "php/headertop.php";
             <!-- This button leads to the new profile page instead of direct st_profile -->
             <li><a href="st_profile.php">View Your Profile</a></li>
             <li><a href="view_classes.php">View Classes</a></li>
+            <li><a href="std_transcript.php">View your transcript</a></li>
+
             <li><a href="view_attendance.php?sid=<?php echo $sid; ?>">Attendance</a></li>
             <li><a href="download_grades.php"><button style="border-radius:10px;transition:all 0.3s ease-in-out;" 
                 onmouseover="this.style.backgroundColor='#ddd'" onmouseout="this.style.backgroundColor='#fff'">Download Grades</button></a></li>
