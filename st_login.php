@@ -5,7 +5,7 @@ require "php/config.php";
 require_once "php/functions.php";
 $user = new login_registration_class();
 if($user->getsession()){
-	header('Location: st_profile.php');
+	header('Location: student.php');
 	exit();
 }
 ?>
@@ -28,7 +28,7 @@ include "header.php";
 							$st_pass = md5($st_pass);
 							$login = $user->st_userlogin($st_id, $st_pass);
 							if($login){
-								header('Location: st_profile.php');
+								header('Location: student.php');
 							}else{
 								echo "<p style='color:red;text-align:center'>Incorrect Student ID or password</p>";
 							}

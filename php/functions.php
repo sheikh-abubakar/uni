@@ -10,84 +10,133 @@ class login_registration_class{
 	//All function for Student
 	
 	//function for student registration
-	public function st_registration($st_id,$st_name,$st_pass,$st_email,$bday,$st_dept,$st_contact,$st_gender,$st_add){
+	public function st_registration($st_id, $st_fname, $st_lname, $st_pass, $st_email, $bday, $st_contact, $st_gender, $state_code, $city_code, $postal_code, $st_img) {
 		global $conn;
-		$query = $conn->query("select st_id from st_info where st_id='$st_id' or email ='$st_email' ");
-
+		$query = $conn->query("SELECT PERSON_ID FROM Person WHERE PERSON_ID='$st_id' OR EMAIL='$st_email'");
 		$num = $query->num_rows;
-		$in_sql = "INSERT INTO st_info (st_id,name,password,email,bday,program,contact,gender,address) VALUES ('$st_id','$st_name','$st_pass','$st_email','$bday','$st_dept','$st_contact','$st_gender','$st_add') ";
-		if($num == 0){
+	
+		$in_sql = "INSERT INTO Person (PERSON_ID, FNAME, LNAME, EMAIL, DOB, GENDER, CONTACTNO, STATE_CODE, CITY_CODE, POSTAL_CODE, IMG) 
+				   VALUES ('$st_id', '$st_fname', '$st_lname', '$st_email', '$bday', '$st_gender', '$st_contact', '$state_code', '$city_code', '$postal_code', '$st_img')";
+		if ($num == 0) {
 			$conn->query($in_sql);
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
 	
+	
 	//function for student login
-	public function st_userlogin($st_id, $st_pass){
+	public function st_userlogin($st_id, $st_pass) {
 		global $conn;
-		$sql = "SELECT st_id,name FROM st_info WHERE st_id='$st_id' and password='$st_pass'";
+		$sql = "SELECT s.STU_ID, p.FNAME, p.LNAME 
+				FROM Student s 
+				JOIN Person p ON s.STU_ID = p.PERSON_ID
+				WHERE s.STU_ID='$st_id' AND s.PASSWORD='$st_pass'";
 		$result = $conn->query($sql);
 		$userdata = $result->fetch_assoc();
 		$count = $result->num_rows;
-		if($count == 1){
+	
+		if ($count == 1) {
 			session_start();
-			$_SESSION['st_login'] = true; 
-			$_SESSION['sid'] = $userdata['st_id']; 
-			$_SESSION['sname'] = $userdata['name']; 
-			//$_SESSION['login_msg'] = "Login Success"; 
+			$_SESSION['st_login'] = true;
+			$_SESSION['sid'] = $userdata['STU_ID']; 
+			$_SESSION['sname'] = $userdata['FNAME'] . " " . $userdata['LNAME'];
 			return true;
-		}else{
+		} else {
 			return false;
 		}
-		
 	}
+	
 	
 	//function for get student Name 
-	public function getusername($sid){
+	public function getusername($sid) {
 		global $conn;
-		$query = $conn->query("select name from st_info where st_id='$sid'");
+		$query = $conn->query("SELECT FNAME, LNAME FROM Person WHERE PERSON_ID='$sid'");
 		$result = $query->fetch_assoc();
-		echo $result['name'];
+		echo $result['FNAME'] . " " . $result['LNAME'];
 	}
-	// Get all info of a specific student by Student ID
-	public function getuserbyid($st_id){
+
+	public function getStudentProfile($sid){
 		global $conn;
-		$query = $conn->query("select * from st_info where st_id='$st_id'");
+		$query = $conn->query("
+			SELECT s.STU_ID, s.DEGREE, p.FNAME, p.LNAME, p.EMAIL, p.DOB, p.GENDER, p.CONTACTNO, p.STATE_CODE, p.CITY_CODE, p.POSTAL_CODE
+			FROM student s
+			JOIN person p ON s.STU_ID = p.PERSON_ID
+			WHERE s.STU_ID = '$sid'
+		");
+		
+		if ($conn->error) {
+			// Log or echo the error to check if something is wrong with the query
+			echo "SQL Error: " . $conn->error;
+		}
+		
 		return $query;
 	}
-	//Update Student Profile
-	public function updateprofile($sid,$st_name,$st_email,$st_dept,$st_gender,$st_contact,$st_add,$file){
+	
+	
+	// Get all info of a specific student by Student ID
+	public function getuserbyid($st_id) {
 		global $conn;
-		$query = $conn->query("update st_info set name='$st_name',email='$st_email',program='$st_dept',gender='$st_gender',contact='$st_contact', address='$st_add',img='$file' where st_id='$sid'");
-		return true;
+		
+		// Adjust the query according to the Person table structure
+		$query = $conn->query("SELECT * FROM Person WHERE PERSON_ID='$st_id'");
+		
+		return $query;
 	}
 	
-	//Change Student Password
-	public function updatePassword($sid, $newpass, $oldpass){
+	//Update Student Profile
+	public function updateprofile($sid, $st_fname, $st_lname, $st_email, $bday, $st_gender, $st_contact, $state_code, $city_code, $postal_code, $st_img) {
 		global $conn;
-		$query = $conn->query("select st_id from st_info where st_id='$sid' and password='$oldpass' ");
+		$query = $conn->query("UPDATE Person 
+							   SET FNAME='$st_fname', LNAME='$st_lname', EMAIL='$st_email', DOB='$bday', GENDER='$st_gender', CONTACTNO='$st_contact', 
+								   STATE_CODE='$state_code', CITY_CODE='$city_code', POSTAL_CODE='$postal_code', IMG='$st_img' 
+							   WHERE PERSON_ID='$sid'");
+		return true;
+	}
+	// Function to get degree of the student from the Student table by Student ID
+public function getDegreeByStudentId($st_id) {
+    global $conn;
+    
+    // Assuming the `Student` table contains a `degree` field
+    $query = $conn->query("SELECT degree FROM Student WHERE stu_id='$st_id'");
+    
+    if ($query->num_rows > 0) {
+        $result = $query->fetch_assoc();
+        return $result['degree'];
+    } else {
+        return "N/A";  // Return "N/A" if no degree is found
+    }
+}
+
+	
+	//Change Student Password
+	public function updatePassword($sid, $newpass, $oldpass) {
+		global $conn;
+		$query = $conn->query("SELECT STU_ID FROM Student WHERE STU_ID='$sid' AND PASSWORD='$oldpass'");
 		$count = $query->num_rows;
-		if($count == 0){
-			return print("<p style='color:red;text-align:center'>old password not exist.</p>");
-		}else{
-			$update = $conn->query("update st_info set password='$newpass' where st_id='$sid' ");
+		if ($count == 0) {
+			return print("<p style='color:red;text-align:center'>Old password does not exist.</p>");
+		} else {
+			$update = $conn->query("UPDATE Student SET PASSWORD='$newpass' WHERE STU_ID='$sid'");
 			return print("<p style='color:green;text-align:center'>Password changed successfully.</p>");
 		}
 	}
+	
 	//Session Unset for Student info //Log out option
-	public function st_logout(){
+	public function st_logout() {
+		session_start();
 		$_SESSION['st_login'] = false;
-		unset($_SESSION['sid']); 
+		unset($_SESSION['sid']);
 		unset($_SESSION['sname']);
 		unset($_SESSION['st_login']);
-		
-		//session_destroy();
+		session_destroy();
 	}
-	public function getsession(){
+	
+	public function getsession() {
 		return @$_SESSION['st_login'];
 	}
+	
 
 	//Ends student releted function 
 	
