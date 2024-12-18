@@ -26,7 +26,6 @@ if($user->get_admin_session()){
 						if(empty($username) or empty($password)){
 							echo "<p style='color:red;text-align:center;'>Field must not be empty.</p>";
 						}else{
-							$password = md5($password);
 							$login = $user->admin_userlogin($username, $password);
 							if($login){
 								header('Location: admin.php');

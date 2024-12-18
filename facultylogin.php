@@ -14,7 +14,7 @@ if ($user->get_faculty_session()) {
 ?>
 
 <?php 
-$pageTitle = "Faculty Login";
+$pageTitle = "Professor Login";
 include "header.php";
 ?>
 
@@ -32,7 +32,6 @@ include "header.php";
                 echo "<p style='color:red;text-align:center;'>Field must not be empty.</p>";
             } else {
                 // Encrypt the password using md5 (You can replace this with a stronger encryption like password_hash())
-                $psw = md5($psw);
                 
                 // Perform faculty login
                 $login = $user->fct_login($username, $psw); // Using the fct_login method from functions.php
@@ -55,7 +54,6 @@ include "header.php";
             <input style="color:#ddd;background:#3498db" type="submit" value="Login" />
         </form>
     </div>
-    <p>Not Registered? <a href="fct_reg.php">Create an account</a></p>
 </div>
 
 <?php
